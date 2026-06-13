@@ -77,24 +77,20 @@ function login(){
   .then(r => r.json())
   .then(res => {
 
-    console.log("LOGIN RESPONSE:", res);
+    console.log(res);
 
     if(res.status === "OK"){
-      alert("Login sukses: " + res.nama);
-
+      alert("Login sukses " + res.nama);
       loginBox.classList.add("hidden");
       menuBox.classList.remove("hidden");
-
-      loadMaster(); // kalau ada brand/kategori
-    } 
-    else {
+    } else {
       alert("Login gagal");
     }
 
   })
   .catch(err => {
-    console.log("ERROR:", err);
-    alert("Server tidak terhubung");
+    console.log(err);
+    alert("Server error");
   });
 }
 function loadMaster(){
