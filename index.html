@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sales Input Catalog</title>
+
+<style>
+body {font-family: Arial; margin:0; background:#f4f6f9;}
+.container {max-width:500px; margin:auto; padding:15px;}
+.card {background:white; padding:15px; margin-bottom:10px; border-radius:10px; box-shadow:0 2px 6px rgba(0,0,0,0.1);}
+input, select {width:100%; padding:10px; margin:5px 0; border:1px solid #ccc; border-radius:8px;}
+button {width:100%; padding:10px; border:none; border-radius:8px; background:#1976d2; color:white; font-weight:bold;}
+.hidden {display:none;}
+.title {text-align:center; font-weight:bold; margin:10px 0;}
+</style>
+
+</head>
+<body>
+
+<div class="container">
+
+<!-- LOGIN -->
+<div class="card" id="loginBox">
+<h3 class="title">LOGIN SALES</h3>
+<input id="user" placeholder="Username">
+<input id="pass" type="password" placeholder="Password">
+<button onclick="login()">LOGIN</button>
+</div>
+
+<!-- MENU -->
+<div class="card hidden" id="menuBox">
+<h3 class="title">MENU</h3>
+<button onclick="showAdd()">TAMBAH PRODUK</button>
+<button onclick="showUpdate()">UPDATE HARGA</button>
+</div>
+
+<!-- ADD -->
+<div class="card hidden" id="addBox">
+<h3 class="title">TAMBAH PRODUK</h3>
+
+<select id="brand"></select>
+<input id="tipe" placeholder="Tipe">
+<input id="harga" placeholder="Harga">
+<select id="kategori"></select>
+
+<input id="s1" placeholder="Spek 1">
+<input id="s2" placeholder="Spek 2">
+<input id="s3" placeholder="Spek 3">
+<input id="s4" placeholder="Spek 4">
+<input id="s5" placeholder="Spek 5">
+
+<button onclick="addProduct()">SIMPAN</button>
+</div>
+
+<!-- UPDATE -->
+<div class="card hidden" id="updateBox">
+<h3 class="title">UPDATE HARGA</h3>
+
+<input id="findTipe" placeholder="Cari Tipe">
+<button onclick="find()">CARI</button>
+
+<div id="info"></div>
+
+<input id="newPrice" placeholder="Harga Baru">
+<button onclick="updatePrice()">UPDATE</button>
+</div>
+
+</div>
+
+<script>
+
+const API = "PASTE_URL_WEB_APP_KAMU_DI_SINI";
+
+function login(){
+  fetch(API,{
+    method:"POST",
+    body:new URLSearchParams({
+      action:"login",
+      user:document.getElementById("user").value,
+      pass:document.getElementById("pass").value
+    })
+  })
+  .then(r=>r.json())
+  .then(res=>{
+    if(res.status=="OK"){
+      document.getElementById("loginBox").classList.add("hidden");
+      document.getElementById("menuBox").classList.remove("hidden");
+      loadMaster();
+    } else alert("Login gagal");
+  });
+}
+
+function loadMaster(){
+  fetch(API,{method:"POST",body:new URLSearchParams({action:"brands"})})
+  .then(r=>r.json()).then(res=>{
+    let b=document.getElementById("brand");
+    res.data.forEach(x=>b.innerHTML+=`<option>${x}</option>`);
+  });
+
+  fetch(API,{method:"POST",body:new URLSearchParams({action:"kategori"})})
+  .then(r=>r.json()).then(res=>{
+    let k=document.getElementById("kategori");
+    res.data.forEach(x=>k.innerHTML+=`<option>${x}</option>`);
+  });
+}
+
+function showAdd(){
+  document.getElementById("addBox").classList.remove("hidden");
+  document.getElementById("updateBox").classList.add("hidden");
+}
+
+function showUpdate(){
+  document.getElementById("updateBox").classList.remove("hidden");
+  document.getElementById("addBox").classList.add("hidden");
+}
+
+function addProduct(){
+  fetch(API,{
+    method:"POST",
+    body:new URLSearchParams({
+      action:"add",
+      brand:brand.value,
+      tipe:tipe.value,
+      harga:harga.value,
+      kategori:kategori.value,
+      spek1:s1.value,
+      spek2:s2.value,
+      spek3:s3.value,
+      spek4:s4.value,
+      spek5:s5.value
+    })
+  })
+  .then(r=>r.json())
+  .then(res=>{
+    if(res.status=="OK") alert("Berhasil");
+    else if(res.status=="EXIST") alert("TIPE sudah ada");
+  });
+}
+
+function find(){
+  fetch(API,{
+    method:"POST",
+    body:new URLSearchParams({
+      action:"find",
+      tipe:findTipe.value
+    })
+  })
+  .then(r=>r.json())
+  .then(res=>{
+    if(res.status=="OK"){
+      info.innerHTML = `
+        <p>Brand: ${res.data.brand}</p>
+        <p>Kategori: ${res.data.kategori}</p>
+        <p>Harga: ${res.data.harga}</p>
+      `;
+    } else alert("Tidak ditemukan");
+  });
+}
+
+function updatePrice(){
+  fetch(API,{
+    method:"POST",
+    body:new URLSearchParams({
+      action:"update",
+      tipe:findTipe.value,
+      harga:newPrice.value
+    })
+  })
+  .then(r=>r.json())
+  .then(res=>{
+    if(res.status=="OK") alert("Harga berhasil diupdate");
+    else alert("Gagal");
+  });
+}
+
+</script>
+
+</body>
+</html>
