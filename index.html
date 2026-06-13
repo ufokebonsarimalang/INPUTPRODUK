@@ -73,21 +73,16 @@ button {width:100%; padding:10px; border:none; border-radius:8px; background:#19
 const API = "https://script.google.com/macros/s/AKfycbwqnu2yJWk3Bb8JPSVy8ZSZxs5Ae4VGSNpRJl1j3Qgkoj-27FQX_ys4-8qyyyrbXJhQ/exec";
 
 function login(){
-  fetch(API,{
-    method:"POST",
-    body:new URLSearchParams({
-      action:"login",
-      user:document.getElementById("user").value,
-      pass:document.getElementById("pass").value
-    })
-  })
+  fetch(API + "?action=login&user="+user.value+"&pass="+pass.value)
   .then(r=>r.json())
   .then(res=>{
     if(res.status=="OK"){
-      document.getElementById("loginBox").classList.add("hidden");
-      document.getElementById("menuBox").classList.remove("hidden");
+      loginBox.classList.add("hidden");
+      menuBox.classList.remove("hidden");
       loadMaster();
-    } else alert("Login gagal");
+    } else {
+      alert("Login gagal");
+    }
   });
 }
 
