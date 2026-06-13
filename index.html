@@ -71,16 +71,16 @@ let brandList=[], kategoriList=[];
 
 // LOGIN
 function login(){
-fetch(API,{method:"POST",body:new URLSearchParams({
-action:"login",user:user.value,pass:pass.value
-})})
+fetch(API+"?action=login&user="+user.value+"&pass="+pass.value)
 .then(r=>r.json())
 .then(res=>{
 if(res.status=="OK"){
 loginBox.classList.add("hidden");
 dashBox.classList.remove("hidden");
 loadMaster();
-}else alert("gagal");
+}else{
+alert("LOGIN GAGAL");
+}
 });
 }
 
