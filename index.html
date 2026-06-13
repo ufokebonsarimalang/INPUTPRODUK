@@ -73,19 +73,26 @@ button {width:100%; padding:10px; border:none; border-radius:8px; background:#19
 const API = "https://script.google.com/macros/s/AKfycbwqnu2yJWk3Bb8JPSVy8ZSZxs5Ae4VGSNpRJl1j3Qgkoj-27FQX_ys4-8qyyyrbXJhQ/exec";
 
 function login(){
-  fetch(API + "?action=login&user="+user.value+"&pass="+pass.value)
-  .then(r=>r.json())
-  .then(res=>{
-    if(res.status=="OK"){
+  fetch(API + "?action=login&user=" + user.value + "&pass=" + pass.value)
+  .then(r => r.json())
+  .then(res => {
+
+    console.log("LOGIN RESPONSE:", res);
+
+    if(res.status === "OK"){
+      alert("Login sukses: " + res.nama);
       loginBox.classList.add("hidden");
       menuBox.classList.remove("hidden");
-      loadMaster();
     } else {
       alert("Login gagal");
     }
+
+  })
+  .catch(err => {
+    console.log(err);
+    alert("Error koneksi");
   });
 }
-
 function loadMaster(){
   fetch(API,{method:"POST",body:new URLSearchParams({action:"brands"})})
   .then(r=>r.json()).then(res=>{
