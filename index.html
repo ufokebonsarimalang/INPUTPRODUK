@@ -101,44 +101,42 @@ kategori.innerHTML=kategoriList.map(x=>`<option>${x}</option>`).join("");
 
 // ADD
 function add(){
-fetch(API,{method:"POST",body:new URLSearchParams({
-action:"add",
-brand:brand.value,
-tipe:tipe.value,
-harga:harga.value,
-kategori:kategori.value,
-spek1:s1.value,
-spek2:s2.value,
-spek3:s3.value,
-spek4:s4.value,
-spek5:s5.value
-})})
+
+fetch(API + "?action=add"
++ "&brand=" + brand.value
++ "&tipe=" + tipe.value
++ "&harga=" + harga.value
++ "&kategori=" + kategori.value
++ "&spek1=" + s1.value
++ "&spek2=" + s2.value
++ "&spek3=" + s3.value
++ "&spek4=" + s4.value
++ "&spek5=" + s5.value)
+
 .then(r=>r.json())
-.then(()=>alert("tersimpan"));
+.then(()=>alert("TERSIMPAN"));
+
 }
 
 // FIND
 function find(){
-fetch(API,{method:"POST",body:new URLSearchParams({
-action:"find",tipe:tipeFind.value
-})})
+
+fetch(API + "?action=find&tipe=" + tipeFind.value)
 .then(r=>r.json())
 .then(res=>{
-hargaLama.innerText=res.harga||"-";
+hargaLama.innerText = res.harga || "-";
 });
+
 }
 
 // UPDATE
 function update(){
-fetch(API,{method:"POST",body:new URLSearchParams({
-action:"update",
-tipe:tipeFind.value,
-harga:hargaBaru.value
-})})
-.then(r=>r.json())
-.then(()=>alert("updated"));
-}
 
+fetch(API + "?action=update&tipe=" + tipeFind.value + "&harga=" + hargaBaru.value)
+.then(r=>r.json())
+.then(()=>alert("UPDATED"));
+
+}
 </script>
 
 </body>
