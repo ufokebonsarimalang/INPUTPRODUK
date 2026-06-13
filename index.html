@@ -71,7 +71,8 @@ let brandList=[], kategoriList=[];
 
 // LOGIN
 function login(){
-fetch(API+"?action=login&user="+user.value+"&pass="+pass.value)
+
+fetch(API + "?action=login&user=" + user.value + "&pass=" + pass.value)
 .then(r=>r.json())
 .then(res=>{
 if(res.status=="OK"){
@@ -82,6 +83,7 @@ loadMaster();
 alert("LOGIN GAGAL");
 }
 });
+
 }
 
 // MASTER DROPDOWN
