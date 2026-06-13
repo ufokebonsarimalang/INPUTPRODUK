@@ -1,74 +1,17 @@
 <!DOCTYPE html>
-<html lang="id">
+<html>
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Sales Dashboard</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DASHBOARD SALES</title>
 
 <style>
-body{
-  margin:0;
-  font-family: Arial;
-  background:#f4f6fb;
-}
-
-.container{
-  max-width:500px;
-  margin:auto;
-  padding:15px;
-}
-
-.card{
-  background:#fff;
-  padding:15px;
-  border-radius:12px;
-  margin-bottom:15px;
-  box-shadow:0 3px 10px rgba(0,0,0,0.08);
-}
-
-h2,h3{
-  text-align:center;
-  margin:10px 0;
-}
-
-input{
-  width:100%;
-  padding:10px;
-  margin:6px 0;
-  border:1px solid #ddd;
-  border-radius:8px;
-  font-size:14px;
-}
-
-button{
-  width:100%;
-  padding:12px;
-  border:none;
-  border-radius:8px;
-  background:#2563eb;
-  color:#fff;
-  font-weight:bold;
-  margin-top:10px;
-}
-
-button:hover{
-  background:#1e4fd6;
-}
-
-.hidden{ display:none; }
-
-.small{
-  font-size:12px;
-  color:#666;
-}
-
-.badge{
-  padding:6px 10px;
-  background:#e5e7eb;
-  display:inline-block;
-  border-radius:6px;
-  margin-top:5px;
-}
+body{font-family:Arial;margin:0;background:#f4f6fb;}
+.container{max-width:500px;margin:auto;padding:15px;}
+.card{background:#fff;padding:15px;border-radius:12px;margin-bottom:15px;box-shadow:0 3px 10px rgba(0,0,0,0.08);}
+input,select{width:100%;padding:10px;margin:6px 0;border:1px solid #ddd;border-radius:8px;}
+button{width:100%;padding:12px;background:#2563eb;color:#fff;border:none;border-radius:8px;font-weight:bold;}
+.hidden{display:none;}
+h2,h3{text-align:center;}
 </style>
 </head>
 
@@ -76,55 +19,45 @@ button:hover{
 
 <div class="container">
 
-<!-- 🔐 LOGIN -->
+<!-- LOGIN -->
 <div id="loginBox" class="card">
-  <h2>LOGIN SALES</h2>
-
-  <input id="user" placeholder="Username">
-  <input id="pass" type="password" placeholder="Password">
-
-  <button onclick="login()">LOGIN</button>
-
-  <p class="small">Masuk untuk input produk & update harga</p>
+<h2>LOGIN</h2>
+<input id="user" placeholder="username">
+<input id="pass" type="password" placeholder="password">
+<button onclick="login()">LOGIN</button>
 </div>
 
 <!-- DASHBOARD -->
 <div id="dashBox" class="hidden">
 
-  <!-- 📦 INPUT PRODUK -->
-  <div class="card">
-    <h3>TAMBAH PRODUK</h3>
+<div class="card">
+<h3>INPUT PRODUK</h3>
 
-    <input id="brand" placeholder="Brand">
-    <input id="tipe" placeholder="Tipe">
-    <input id="harga" placeholder="Harga">
-    <input id="kategori" placeholder="Kategori">
+<select id="brand"></select>
+<input id="tipe" placeholder="Tipe">
+<input id="harga" placeholder="Harga">
+<select id="kategori"></select>
 
-    <input id="s1" placeholder="Spek 1">
-    <input id="s2" placeholder="Spek 2">
-    <input id="s3" placeholder="Spek 3">
-    <input id="s4" placeholder="Spek 4">
-    <input id="s5" placeholder="Spek 5">
+<input id="s1" placeholder="Spek1">
+<input id="s2" placeholder="Spek2">
+<input id="s3" placeholder="Spek3">
+<input id="s4" placeholder="Spek4">
+<input id="s5" placeholder="Spek5">
 
-    <button onclick="addProduk()">SIMPAN PRODUK</button>
-  </div>
+<button onclick="add()">SIMPAN</button>
+</div>
 
-  <!-- 💰 UPDATE HARGA -->
-  <div class="card">
-    <h3>UPDATE HARGA</h3>
+<div class="card">
+<h3>UPDATE HARGA</h3>
 
-    <input id="tipeFind" placeholder="Ketik tipe produk">
+<input id="tipeFind" placeholder="ketik tipe">
+<button onclick="find()">CARI</button>
 
-    <button onclick="cari()">CARI</button>
+<p>Harga lama: <span id="hargaLama">-</span></p>
 
-    <div class="badge">
-      Harga lama: <span id="hargaLama">-</span>
-    </div>
-
-    <input id="hargaBaru" placeholder="Harga baru">
-
-    <button onclick="updateHarga()">UPDATE HARGA</button>
-  </div>
+<input id="hargaBaru" placeholder="harga baru">
+<button onclick="update()">UPDATE</button>
+</div>
 
 </div>
 
@@ -132,93 +65,76 @@ button:hover{
 
 <script>
 
-const API = "https://script.google.com/macros/s/AKfycbzk3x5388GfTr12NFBXG2yXS860b6pKgPTI0byNTEKaZ5euLIbNi93-k6u7qNjpwGt7/exec";
+const API="PASTE_URL_APPS_SCRIPT";
 
-// 🔐 LOGIN
+let brandList=[], kategoriList=[];
+
+// LOGIN
 function login(){
-  fetch(API,{
-    method:"POST",
-    body:new URLSearchParams({
-      action:"login",
-      user:user.value,
-      pass:pass.value
-    })
-  })
-  .then(r=>r.json())
-  .then(res=>{
-    if(res.status=="OK"){
-      loginBox.classList.add("hidden");
-      dashBox.classList.remove("hidden");
-    } else {
-      alert("Login gagal");
-    }
-  });
+fetch(API,{method:"POST",body:new URLSearchParams({
+action:"login",user:user.value,pass:pass.value
+})})
+.then(r=>r.json())
+.then(res=>{
+if(res.status=="OK"){
+loginBox.classList.add("hidden");
+dashBox.classList.remove("hidden");
+loadMaster();
+}else alert("gagal");
+});
 }
 
-// 📦 ADD PRODUK
-function addProduk(){
-  fetch(API,{
-    method:"POST",
-    body:new URLSearchParams({
-      action:"add",
-      brand:brand.value,
-      tipe:tipe.value,
-      harga:harga.value,
-      kategori:kategori.value,
-      spek1:s1.value,
-      spek2:s2.value,
-      spek3:s3.value,
-      spek4:s4.value,
-      spek5:s5.value
-    })
-  })
-  .then(r=>r.json())
-  .then(res=>{
-    if(res.status=="OK"){
-      alert("Produk berhasil disimpan");
-    }
-  });
+// MASTER DROPDOWN
+function loadMaster(){
+fetch(API,{method:"POST",body:new URLSearchParams({action:"master"})})
+.then(r=>r.json())
+.then(res=>{
+brandList=res.brand;
+kategoriList=res.kategori;
+
+brand.innerHTML=brandList.map(x=>`<option>${x}</option>`).join("");
+kategori.innerHTML=kategoriList.map(x=>`<option>${x}</option>`).join("");
+});
 }
 
-// 🔍 CARI PRODUK
-function cari(){
-  fetch(API,{
-    method:"POST",
-    body:new URLSearchParams({
-      action:"find",
-      tipe:tipeFind.value
-    })
-  })
-  .then(r=>r.json())
-  .then(res=>{
-    if(res.status=="OK"){
-      hargaLama.innerText = res.harga;
-    } else {
-      alert("Produk tidak ditemukan");
-    }
-  });
+// ADD
+function add(){
+fetch(API,{method:"POST",body:new URLSearchParams({
+action:"add",
+brand:brand.value,
+tipe:tipe.value,
+harga:harga.value,
+kategori:kategori.value,
+spek1:s1.value,
+spek2:s2.value,
+spek3:s3.value,
+spek4:s4.value,
+spek5:s5.value
+})})
+.then(r=>r.json())
+.then(()=>alert("tersimpan"));
 }
 
-// 💰 UPDATE HARGA
-function updateHarga(){
-  fetch(API,{
-    method:"POST",
-    body:new URLSearchParams({
-      action:"update",
-      tipe:tipeFind.value,
-      harga:hargaBaru.value
-    })
-  })
-  .then(r=>r.json())
-  .then(res=>{
-    if(res.status=="OK"){
-      alert("Harga berhasil diupdate");
-      hargaLama.innerText = hargaBaru.value;
-      hargaBaru.value = "";
-    } else {
-      alert("Gagal update");
-    }
-  });
+// FIND
+function find(){
+fetch(API,{method:"POST",body:new URLSearchParams({
+action:"find",tipe:tipeFind.value
+})})
+.then(r=>r.json())
+.then(res=>{
+hargaLama.innerText=res.harga||"-";
+});
+}
+
+// UPDATE
+function update(){
+fetch(API,{method:"POST",body:new URLSearchParams({
+action:"update",
+tipe:tipeFind.value,
+harga:hargaBaru.value
+})})
+.then(r=>r.json())
+.then(()=>alert("updated"));
 }
 
 </script>
