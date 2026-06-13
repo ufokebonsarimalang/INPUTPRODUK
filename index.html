@@ -1,123 +1,162 @@
 <!DOCTYPE html>
-<html>
+<html lang="id">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Sales Input Catalog</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sales Dashboard</title>
 
 <style>
-body {font-family: Arial; margin:0; background:#f4f6f9;}
-.container {max-width:500px; margin:auto; padding:15px;}
-.card {background:white; padding:15px; margin-bottom:10px; border-radius:10px; box-shadow:0 2px 6px rgba(0,0,0,0.1);}
-input, select {width:100%; padding:10px; margin:5px 0; border:1px solid #ccc; border-radius:8px;}
-button {width:100%; padding:10px; border:none; border-radius:8px; background:#1976d2; color:white; font-weight:bold;}
-.hidden {display:none;}
-.title {text-align:center; font-weight:bold; margin:10px 0;}
-</style>
+body{
+  margin:0;
+  font-family: Arial;
+  background:#f4f6fb;
+}
 
+.container{
+  max-width:500px;
+  margin:auto;
+  padding:15px;
+}
+
+.card{
+  background:#fff;
+  padding:15px;
+  border-radius:12px;
+  margin-bottom:15px;
+  box-shadow:0 3px 10px rgba(0,0,0,0.08);
+}
+
+h2,h3{
+  text-align:center;
+  margin:10px 0;
+}
+
+input{
+  width:100%;
+  padding:10px;
+  margin:6px 0;
+  border:1px solid #ddd;
+  border-radius:8px;
+  font-size:14px;
+}
+
+button{
+  width:100%;
+  padding:12px;
+  border:none;
+  border-radius:8px;
+  background:#2563eb;
+  color:#fff;
+  font-weight:bold;
+  margin-top:10px;
+}
+
+button:hover{
+  background:#1e4fd6;
+}
+
+.hidden{ display:none; }
+
+.small{
+  font-size:12px;
+  color:#666;
+}
+
+.badge{
+  padding:6px 10px;
+  background:#e5e7eb;
+  display:inline-block;
+  border-radius:6px;
+  margin-top:5px;
+}
+</style>
 </head>
+
 <body>
 
 <div class="container">
 
-<!-- LOGIN -->
-<div class="card" id="loginBox">
-<h3 class="title">LOGIN SALES</h3>
-<input id="user" placeholder="Username">
-<input id="pass" type="password" placeholder="Password">
-<button onclick="login()">LOGIN</button>
+<!-- 🔐 LOGIN -->
+<div id="loginBox" class="card">
+  <h2>LOGIN SALES</h2>
+
+  <input id="user" placeholder="Username">
+  <input id="pass" type="password" placeholder="Password">
+
+  <button onclick="login()">LOGIN</button>
+
+  <p class="small">Masuk untuk input produk & update harga</p>
 </div>
 
-<!-- MENU -->
-<div class="card hidden" id="menuBox">
-<h3 class="title">MENU</h3>
-<button onclick="showAdd()">TAMBAH PRODUK</button>
-<button onclick="showUpdate()">UPDATE HARGA</button>
-</div>
+<!-- DASHBOARD -->
+<div id="dashBox" class="hidden">
 
-<!-- ADD -->
-<div class="card hidden" id="addBox">
-<h3 class="title">TAMBAH PRODUK</h3>
+  <!-- 📦 INPUT PRODUK -->
+  <div class="card">
+    <h3>TAMBAH PRODUK</h3>
 
-<select id="brand"></select>
-<input id="tipe" placeholder="Tipe">
-<input id="harga" placeholder="Harga">
-<select id="kategori"></select>
+    <input id="brand" placeholder="Brand">
+    <input id="tipe" placeholder="Tipe">
+    <input id="harga" placeholder="Harga">
+    <input id="kategori" placeholder="Kategori">
 
-<input id="s1" placeholder="Spek 1">
-<input id="s2" placeholder="Spek 2">
-<input id="s3" placeholder="Spek 3">
-<input id="s4" placeholder="Spek 4">
-<input id="s5" placeholder="Spek 5">
+    <input id="s1" placeholder="Spek 1">
+    <input id="s2" placeholder="Spek 2">
+    <input id="s3" placeholder="Spek 3">
+    <input id="s4" placeholder="Spek 4">
+    <input id="s5" placeholder="Spek 5">
 
-<button onclick="addProduct()">SIMPAN</button>
-</div>
+    <button onclick="addProduk()">SIMPAN PRODUK</button>
+  </div>
 
-<!-- UPDATE -->
-<div class="card hidden" id="updateBox">
-<h3 class="title">UPDATE HARGA</h3>
+  <!-- 💰 UPDATE HARGA -->
+  <div class="card">
+    <h3>UPDATE HARGA</h3>
 
-<input id="findTipe" placeholder="Cari Tipe">
-<button onclick="find()">CARI</button>
+    <input id="tipeFind" placeholder="Ketik tipe produk">
 
-<div id="info"></div>
+    <button onclick="cari()">CARI</button>
 
-<input id="newPrice" placeholder="Harga Baru">
-<button onclick="updatePrice()">UPDATE</button>
+    <div class="badge">
+      Harga lama: <span id="hargaLama">-</span>
+    </div>
+
+    <input id="hargaBaru" placeholder="Harga baru">
+
+    <button onclick="updateHarga()">UPDATE HARGA</button>
+  </div>
+
 </div>
 
 </div>
 
 <script>
 
-const API = "https://script.google.com/macros/s/AKfycbwqnu2yJWk3Bb8JPSVy8ZSZxs5Ae4VGSNpRJl1j3Qgkoj-27FQX_ys4-8qyyyrbXJhQ/exec";
+const API = "https://script.google.com/macros/s/AKfycbzk3x5388GfTr12NFBXG2yXS860b6pKgPTI0byNTEKaZ5euLIbNi93-k6u7qNjpwGt7/exec";
 
+// 🔐 LOGIN
 function login(){
-  fetch(API + "?action=login&user=" + user.value + "&pass=" + pass.value)
-  .then(r => r.json())
-  .then(res => {
-
-    console.log(res);
-
-    if(res.status === "OK"){
-      alert("Login sukses " + res.nama);
+  fetch(API,{
+    method:"POST",
+    body:new URLSearchParams({
+      action:"login",
+      user:user.value,
+      pass:pass.value
+    })
+  })
+  .then(r=>r.json())
+  .then(res=>{
+    if(res.status=="OK"){
       loginBox.classList.add("hidden");
-      menuBox.classList.remove("hidden");
+      dashBox.classList.remove("hidden");
     } else {
       alert("Login gagal");
     }
-
-  })
-  .catch(err => {
-    console.log(err);
-    alert("Server error");
-  });
-}
-function loadMaster(){
-  fetch(API,{method:"POST",body:new URLSearchParams({action:"brands"})})
-  .then(r=>r.json()).then(res=>{
-    let b=document.getElementById("brand");
-    res.data.forEach(x=>b.innerHTML+=`<option>${x}</option>`);
-  });
-
-  fetch(API,{method:"POST",body:new URLSearchParams({action:"kategori"})})
-  .then(r=>r.json()).then(res=>{
-    let k=document.getElementById("kategori");
-    res.data.forEach(x=>k.innerHTML+=`<option>${x}</option>`);
   });
 }
 
-function showAdd(){
-  document.getElementById("addBox").classList.remove("hidden");
-  document.getElementById("updateBox").classList.add("hidden");
-}
-
-function showUpdate(){
-  document.getElementById("updateBox").classList.remove("hidden");
-  document.getElementById("addBox").classList.add("hidden");
-}
-
-function addProduct(){
+// 📦 ADD PRODUK
+function addProduk(){
   fetch(API,{
     method:"POST",
     body:new URLSearchParams({
@@ -135,44 +174,50 @@ function addProduct(){
   })
   .then(r=>r.json())
   .then(res=>{
-    if(res.status=="OK") alert("Berhasil");
-    else if(res.status=="EXIST") alert("TIPE sudah ada");
+    if(res.status=="OK"){
+      alert("Produk berhasil disimpan");
+    }
   });
 }
 
-function find(){
+// 🔍 CARI PRODUK
+function cari(){
   fetch(API,{
     method:"POST",
     body:new URLSearchParams({
       action:"find",
-      tipe:findTipe.value
+      tipe:tipeFind.value
     })
   })
   .then(r=>r.json())
   .then(res=>{
     if(res.status=="OK"){
-      info.innerHTML = `
-        <p>Brand: ${res.data.brand}</p>
-        <p>Kategori: ${res.data.kategori}</p>
-        <p>Harga: ${res.data.harga}</p>
-      `;
-    } else alert("Tidak ditemukan");
+      hargaLama.innerText = res.harga;
+    } else {
+      alert("Produk tidak ditemukan");
+    }
   });
 }
 
-function updatePrice(){
+// 💰 UPDATE HARGA
+function updateHarga(){
   fetch(API,{
     method:"POST",
     body:new URLSearchParams({
       action:"update",
-      tipe:findTipe.value,
-      harga:newPrice.value
+      tipe:tipeFind.value,
+      harga:hargaBaru.value
     })
   })
   .then(r=>r.json())
   .then(res=>{
-    if(res.status=="OK") alert("Harga berhasil diupdate");
-    else alert("Gagal");
+    if(res.status=="OK"){
+      alert("Harga berhasil diupdate");
+      hargaLama.innerText = hargaBaru.value;
+      hargaBaru.value = "";
+    } else {
+      alert("Gagal update");
+    }
   });
 }
 
