@@ -81,16 +81,20 @@ function login(){
 
     if(res.status === "OK"){
       alert("Login sukses: " + res.nama);
+
       loginBox.classList.add("hidden");
       menuBox.classList.remove("hidden");
-    } else {
+
+      loadMaster(); // kalau ada brand/kategori
+    } 
+    else {
       alert("Login gagal");
     }
 
   })
   .catch(err => {
-    console.log(err);
-    alert("Error koneksi");
+    console.log("ERROR:", err);
+    alert("Server tidak terhubung");
   });
 }
 function loadMaster(){
